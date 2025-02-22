@@ -1,0 +1,30 @@
+---
+- name: check file
+  hosts: "{{ host | default('localhost') }}"
+  gather_facts: no
+  vars:
+    filename: "{{ value1 }}"
+
+  tasks:
+
+# check local file  
+  - name: local file
+    ansible.builtin.stat: 
+      checksum_algorithm: sha224
+      path: "{{ filename }}"
+    no_log: true
+    delegate_to: localhost
+    register: orgfile
+
+# check remote file on same location
+  - name: remote file
+    ansible.builtin.stat: 
+      checksum_algorithm: sha224
+      path: "{{ filename }}"
+    no_log: true
+    register: remotefile
+
+  - name: checksum summary    
+    ansible.builtin.debug: 
+      msg: "{{ orgfile.stat.checksum }}  {{ remotefile.stat.checksum }}"
+    failed_when: orgfile.stat.checksum != remotefile.stat.checksum
