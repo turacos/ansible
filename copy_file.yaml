@@ -13,6 +13,7 @@
       path: "{{ filename }}"
     delegate_to: localhost
     register: orgfile
+    failed_when: not orgfile.stat.exists
 
 # copy file securely    
   - ansible.builtin.copy:
@@ -20,3 +21,10 @@
       dest: "{{ filename }}"
     when: orgfile.stat.exists
 
+  - ansible.builtin.stat: 
+      checksum_algorithm: sha224
+      path: "{{ filename }}"
+    register: remotefile
+    
+  - ansible.builtin.debug: 
+      msg: "local : {{ orgfile.stat.checksum }} remote : {{ remotefile.stat.checksum }}"
