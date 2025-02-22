@@ -12,16 +12,15 @@
     ansible.builtin.stat: 
       checksum_algorithm: sha224
       path: "{{ filename }}"
-    no_log: true
     delegate_to: localhost
     register: orgfile
+    failed_when: not orgfile.stat.exists
 
 # check remote file on same location
   - name: remote file
     ansible.builtin.stat: 
       checksum_algorithm: sha224
       path: "{{ filename }}"
-    no_log: true
     register: remotefile
 
   - name: checksum summary    
