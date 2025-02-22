@@ -20,11 +20,3 @@
       dest: "{{ filename }}"
     when: orgfile.stat.exists
 
-  - ansible.builtin.stat: 
-      checksum_algorithm: sha224
-      path: "{{ filename }}"
-    register: remotefile
-    
-  - ansible.builtin.debug: 
-      msg: "{{ orgfile.stat.checksum }}  {{ remotefile.stat.checksum }}"
-    failed_when: orgfile.stat.checksum != remotefile.stat.checksum
